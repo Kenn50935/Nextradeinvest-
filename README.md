@@ -77,7 +77,16 @@
             color:white;
             border:none;
         }
-    </style>
+    </style>button{
+    padding:10px;
+    margin:5px 0;
+    width:100%;
+    border:none;
+    background:#000;
+    color:#fff;
+    border-radius:5px;
+    cursor:pointer;
+}
 </head>
 
 <body>
@@ -123,7 +132,7 @@
     <h3>Login</h3>
     <input type="text" placeholder="Username">
     <input type="password" placeholder="Password">
-    <button>Login</button>
+    <button>Login</button><button onclick="showDashboard()">Login</button>
 </div>
 
 <!-- REGISTER -->
@@ -140,6 +149,99 @@
 </footer>
 
 <script>
+function showDashboard(){<div class="form-box" id="dashboard">
+    <h2>Dashboard</h2>
+
+    <p><b>Balance:</b> $0.00</p>
+    <p><b>Total Invested:</b> $0.00</p>
+    <p><b>Referral Earnings:</b> $0.00</p>
+
+    <hr>
+let balance = 0;
+let referralEarnings = 0;
+
+function generateReferral(){
+    let userId = Math.floor(Math.random() * 100000);
+    let link = window.location.href + "?ref=" + userId;
+
+    document.getElementById("refLink").value = link;
+
+    alert("Referral link generated!");
+}
+
+// Simulation function (lè yon moun "envite")
+function addReferralBonus(){
+    let bonus = 5; // chak referral = $5 bonus
+    referralEarnings += bonus;
+
+    document.getElementById("refEarn").innerText = referralEarnings.toFixed(2);
+
+    alert("You received $5 referral bonus!");
+}
+function deposit(){
+    let amount = parseFloat(document.getElementById("depositAmount").value);
+
+    if(isNaN(amount) || amount <= 0){
+        alert("Enter valid amount");
+        return;
+    }
+
+    balance += amount;
+    alert("Deposit successful: $" + amount);
+    updateUI();
+}
+
+function withdraw(){
+    let amount = parseFloat(document.getElementById("withdrawAmount").value);
+
+    if(isNaN(amount) || amount <= 0){
+        alert("Enter valid amount");
+        return;
+    }
+
+    let fee = amount * 0.10;
+    let total = amount + fee;
+
+    if(total > balance){
+        alert("Not enough balance (including 10% fee)");
+        return;
+    }
+
+    balance -= total;
+    alert("Withdraw successful: $" + amount + " | Fee: $" + fee);
+    updateUI();
+<h3>Referral System</h3>
+
+<p><b>Your Referral Link:</b></p>
+<input type="text" id="refLink" readonly>
+
+<button onclick="generateReferral()">Generate Link</button>
+
+<p><b>Referral Earnings:</b> $<span id="refEarn">0.00</span></p>
+}
+
+function updateUI(){
+    document.querySelector("#dashboard p").innerHTML = "<b>Balance:</b> $" + balance.toFixed(2);
+}
+
+    <h3>Deposit</h3>
+    <input type="number" id="depositAmount" placeholder="Enter amount">
+    <button onclick="deposit()">Deposit</button>
+
+    <h3>Withdraw</h3>
+    <input type="number" id="withdrawAmount" placeholder="Enter amount">
+    <button onclick="withdraw()">Withdraw</button>
+
+    <hr>
+
+    <h3>Actions</h3>
+    <button onclick="alert('Referral system coming soon')">Referral</button>
+</div>
+    document.getElementById("home").style.display="none";
+    document.getElementById("login").style.display="none";
+    document.getElementById("register").style.display="none";
+    document.getElementById("dashboard").style.display="block";
+}
 function showHome(){
     document.getElementById("home").style.display="block";
     document.getElementById("login").style.display="none";
@@ -163,3 +265,25 @@ showHome();
 
 </body>
 </html>
+<!-- DASHBOARD -->
+<div class="form-box" id="dashboard">
+    <h2>Dashboard</h2>
+
+    <p><b>Balance:</b> $0.00</p>
+    <p><b>Total Invested:</b> $0.00</p>
+    <p><b>Referral Earnings:</b> $0.00</p>
+
+    <hr>
+
+    <h3>Quick Actions</h3>
+
+    <button onclick="alert('Deposit system coming soon')">Deposit</button>
+    <button onclick="alert('Withdrawal system coming soon')">Withdraw</button>
+    <button onclick="alert('Referral link coming soon')">Referral</button>
+</div>
+window.onload = function(){
+    let urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.get("ref")){
+        addReferralBonus();
+    }
+}
