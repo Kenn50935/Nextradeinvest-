@@ -19,7 +19,7 @@
             text-align:center;
         }
 
-        nav a{
+        nav a{<a onclick="showAdmin()">Admin</a>
             color:white;
             margin:10px;
             text-decoration:none;
@@ -149,6 +149,67 @@
 </footer>
 
 <script>
+let balance = localStorage.getItem("balance") 
+    ? parseFloat(localStorage.getItem("balance")) : 0;
+
+let referralEarnings = localStorage.getItem("referralEarnings") 
+    ? parseFloat(localStorage.getItem("referralEarnings")) : 0;
+
+let totalUsers = localStorage.getItem("totalUsers") 
+    ? parseInt(localStorage.getItem("totalUsers")) : 1;
+
+let platformBalance = localStorage.getItem("platformBalance") 
+    ? parseFloat(localStorage.getItem("platformBalance")) : 0;
+function saveData(){
+    localStorage.setItem("balance", balance);
+    localStorage.setItem("referralEarnings", referralEarnings);
+    localStorage.setItem("totalUsers", totalUsers);
+    localStorage.setItem("platformBalance", platformBalance);
+}
+
+function showAdmin(){
+    document.getElementById("home").style.display="none";
+    document.getElementById("login").style.display="none";
+    document.getElementById("register").style.display="none";
+    document.getElementById("dashboard").style.display="none";
+    document.getElementById("adminPanel").style.display="block";
+}
+
+function adminAddBalance(){
+    function adminAddBalance(){
+    let amount = parseFloat(document.getElementById("adminAdd").value);
+
+    if(isNaN(amount) || amount <= 0){
+        alert("Invalid amount");
+        return;
+    }
+
+    platformBalance += amount;
+    saveData();
+
+    document.getElementById("platformBalance").innerText =
+        platformBalance.toFixed(2);
+}
+    }
+
+    platformBalance += amount;
+    document.getElementById("platformBalance").innerText = platformBalance.toFixed(2);
+
+    alert("Balance added to platform!");
+}
+
+function resetSystem(){
+    if(confirm("Reset everything?")){
+        balance = 0;
+        referralEarnings = 0;
+        platformBalance = 0;
+
+        document.getElementById("platformBalance").innerText = "0.00";
+        document.getElementById("refEarn").innerText = "0.00";
+
+        alert("System reset completed!");
+    }
+}
 function showDashboard(){<div class="form-box" id="dashboard">
     <h2>Dashboard</h2>
 
@@ -192,6 +253,7 @@ function deposit(){
 }
 
 function withdraw(){
+function withdraw(){
     let amount = parseFloat(document.getElementById("withdrawAmount").value);
 
     if(isNaN(amount) || amount <= 0){
@@ -203,12 +265,16 @@ function withdraw(){
     let total = amount + fee;
 
     if(total > balance){
-        alert("Not enough balance (including 10% fee)");
+        alert("Not enough balance");
         return;
     }
 
     balance -= total;
-    alert("Withdraw successful: $" + amount + " | Fee: $" + fee);
+    saveData();
+    updateUI();
+
+    alert("Withdraw successful");
+}
     updateUI();
 <h3>Referral System</h3>
 
@@ -266,6 +332,21 @@ showHome();
 </body>
 </html>
 <!-- DASHBOARD -->
+<div class="form-box" id="adminPanel">
+    <h2>Admin Panel</h2>
+
+    <p><b>Total Users:</b> <span id="totalUsers">1</span></p>
+    <p><b>Total Platform Balance:</b> $<span id="platformBalance">0.00</span></p>
+
+    <hr>
+
+    <h3>Manual Add Balance</h3>
+    <input type="number" id="adminAdd" placeholder="Amount">
+    <button onclick="adminAddBalance()">Add</button>
+
+    <h3>Reset System</h3>
+    <button onclick="resetSystem()">Reset All</button>
+</div>
 <div class="form-box" id="dashboard">
     <h2>Dashboard</h2>
 
@@ -285,5 +366,11 @@ window.onload = function(){
     let urlParams = new URLSearchParams(window.location.search);
     if(urlParams.get("ref")){
         addReferralBonus();
-    }
+    }function addReferralBonus(){
+    referralEarnings += 5;
+    saveData();
+
+    document.getElementById("refEarn").innerText =
+        referralEarnings.toFixed(2);
+}
 }
